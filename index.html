@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TERONG - Desa Terong</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Konfigurasi Palet Warna & Font Modern
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        poppins: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        lightest: '#f8fafc',
+                        lightCyan: '#e0f2fe',
+                        aqua: '#38bdf8',
+                        primary: '#0ea5e9',
+                        dark: '#0284c7',
+                    },
+                    boxShadow: {
+                        'soft': '0 10px 40px -10px rgba(0,0,0,0.05)',
+                        'glow': '0 4px 20px 0 rgba(14, 165, 233, 0.3)',
+                        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.07)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f1f5f9;
+            -webkit-tap-highlight-color: transparent;
+            overscroll-behavior: none; 
+        }
+
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+
+        .nav-btn {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .nav-btn.active {
+            transform: translateY(-4px);
+        }
+        .nav-btn.active i {
+            color: #0ea5e9;
+            background-color: #e0f2fe;
+            padding: 0.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 10px rgba(14, 165, 233, 0.1);
+        }
+        .nav-btn.active span {
+            color: #0ea5e9;
+            font-weight: 700;
+        }
+        
+        .water-fill {
+            transition: height 1s ease-in-out, background-color 0.5s;
+            background-image: linear-gradient(180deg, #38bdf8 0%, #0ea5e9 100%);
+        }
+
+        /* Efek Modern Glassmorphism & Mesh */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+        
+        .mesh-bg {
+            background-color: #0ea5e9;
+            background-image: radial-gradient(at 0% 0%, #38bdf8 0px, transparent 50%),
+                              radial-gradient(at 100% 100%, #0284c7 0px, transparent 50%);
+        }
+        
+        .bg-blob {
+            position: absolute;
+            filter: blur(60px);
+            z-index: 0;
+            opacity: 0.4;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased selection:bg-primary selection:text-white">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 flex flex-col space-y-2 pointer-events-none w-11/12 max-w-sm font-poppins"></div>
+
+    <div class="max-w-md mx-auto min-h-screen relative shadow-2xl overflow-hidden bg-slate-50" id="app-container">
+        
+        <!-- Auth View -->
+        <div id="auth-view" class="min-h-screen flex flex-col justify-center items-center p-6 relative">
+            <!-- Background Blobs for Auth -->
+            <div class="bg-blob bg-aqua w-64 h-64 top-10 -left-20"></div>
+            <div class="bg-blob bg-primary w-64 h-64 bottom-20 -right-20"></div>
+            
+            <div class="w-full glass-panel rounded-[2rem] shadow-glass overflow-hidden relative z-10 border border-white">
+                <div class="p-8 text-center mt-4">
+                    <div class="w-20 h-20 bg-gradient-to-br from-primary to-aqua rounded-2xl mx-auto flex items-center justify-center shadow-glow mb-6 rotate-3">
+                        <i class="fa-solid fa-leaf text-4xl text-white -rotate-3"></i>
+                    </div>
+                    <!-- Mengubah TERAKITA menjadi TERAKITA+ (pangkat) -->
+                    <h1 class="text-3xl font-extrabold mb-2 font-poppins text-slate-800 tracking-tight">TERAKITA<sup class="text-xl">+</sup></h1>
+                    <p class="text-sm text-slate-500 font-medium">Terong Aksi Kita</p>
+                </div>
+                
+                <div class="p-8 pt-2 space-y-6">
+                    <h2 id="auth-title" class="text-lg font-bold text-center text-slate-700 font-poppins">Masuk ke Akun</h2>
+                    
+                    <form id="auth-form" class="space-y-5" onsubmit="handleAuth(event)">
+                        <div id="name-field" class="hidden space-y-1.5">
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Nama Lengkap</label>
+                            <input type="text" id="input-name" class="w-full px-4 py-3.5 rounded-2xl bg-white/60 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all text-sm font-medium" placeholder="Budi Santoso">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">No. Handphone / NIK</label>
+                            <input type="text" required class="w-full px-4 py-3.5 rounded-2xl bg-white/60 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all text-sm font-medium" placeholder="08123456789">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Kata Sandi</label>
+                            <input type="password" required class="w-full px-4 py-3.5 rounded-2xl bg-white/60 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all text-sm font-medium" placeholder="••••••••">
+                        </div>
+                        <button type="submit" id="submit-btn" class="w-full py-4 rounded-2xl font-bold text-white shadow-glow bg-gradient-to-r from-primary to-aqua active:scale-95 transition-transform font-poppins mt-2">
+                            Masuk
+                        </button>
+                    </form>
+                    <p class="text-center text-sm text-slate-500 font-medium">
+                        <span id="toggle-text">Belum punya akun? </span>
+                        <button type="button" onclick="toggleAuthView()" id="toggle-btn" class="font-bold text-primary hover:text-dark transition-colors">
+                            Daftar sekarang
+                        </button>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div id="main-layout" class="hidden relative h-screen overflow-y-auto pb-28">
+            <!-- Modern Sticky Header -->
+            <header class="glass-panel px-6 py-4 sticky top-0 z-40 flex justify-between items-center border-b border-slate-200/50">
+                <div class="flex items-center space-x-3">
+                    <div class="w-9 h-9 bg-gradient-to-br from-primary to-aqua rounded-[10px] flex items-center justify-center shadow-sm">
+                        <i class="fa-solid fa-leaf text-white text-sm"></i>
+                    </div>
+                    <h1 id="header-title" class="text-xl font-bold text-slate-800 font-poppins tracking-tight">Desa Terong</h1>
+                </div>
+                <button onclick="handleLogout()" class="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition-colors">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                </button>
+            </header>
+
+            <main class="p-6 space-y-6">
+                
+                <!-- Dashboard View -->
+                <div id="view-dashboard" class="space-y-6 block">
+                    <!-- Hero Card -->
+                    <div class="p-6 rounded-[2rem] text-white shadow-glow mesh-bg relative overflow-hidden">
+                        <div class="absolute -right-10 -top-10 w-40 h-40 bg-white opacity-10 rounded-full blur-2xl"></div>
+                        <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-dark opacity-20 rounded-full blur-2xl"></div>
+                        
+                        <div class="relative z-10 flex justify-between items-start mb-6">
+                            <div>
+                                <p class="text-sm font-medium text-lightCyan mb-1">Selamat datang kembali,</p>
+                                <h2 class="text-2xl font-bold font-poppins tracking-wide">Keluarga Budi</h2>
+                            </div>
+                            <div class="w-12 h-12 rounded-full glass-panel flex items-center justify-center border border-white/30 shadow-sm overflow-hidden p-0.5">
+                                <img src="https://ui-avatars.com/api/?name=Keluarga+Budi&background=e0f2fe&color=0ea5e9" alt="Avatar" class="w-full h-full rounded-full object-cover">
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white/10 p-5 rounded-[1.5rem] backdrop-blur-md border border-white/20 flex justify-between items-end shadow-inner">
+                            <div>
+                                <p class="text-xs font-medium text-lightCyan mb-1 uppercase tracking-wider">Poin Bank Sampah</p>
+                                <p class="text-4xl font-bold font-poppins"><span id="dash-points">2.450</span> <span class="text-base font-normal opacity-80">pts</span></p>
+                            </div>
+                            <button onclick="switchTab('bank')" class="bg-white text-primary text-xs font-bold px-4 py-2.5 rounded-xl shadow-md active:scale-95 transition-transform flex items-center space-x-1">
+                                <span>Tukar</span> <i class="fa-solid fa-chevron-right text-[10px] ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tips Notification -->
+                    <div class="glass-panel p-4 rounded-[1.5rem] flex items-center space-x-4 shadow-soft">
+                        <div class="bg-amber-100 w-12 h-12 rounded-2xl flex items-center justify-center text-amber-500 shrink-0 shadow-inner">
+                            <i class="fa-solid fa-lightbulb text-xl"></i>
+                        </div>
+                        <div class="flex-1 pr-2">
+                            <h4 class="text-[10px] font-bold text-slate-400 font-poppins mb-0.5 uppercase tracking-wider">Tips Harian</h4>
+                            <p id="daily-tip" class="text-xs text-slate-700 leading-relaxed transition-opacity duration-500 font-medium">Memuat tips bermanfaat...</p>
+                        </div>
+                    </div>
+
+                    <!-- Grid Stats -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="p-5 rounded-[1.5rem] bg-white shadow-soft border border-slate-100 flex flex-col justify-between hover:-translate-y-1 transition-transform duration-300">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="w-10 h-10 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-500">
+                                    <i class="fa-solid fa-droplet"></i>
+                                </div>
+                                <span class="bg-green-100 text-green-600 text-[10px] font-bold px-2.5 py-1 rounded-full border border-green-200">Normal</span>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-500 font-medium mb-1">pH Air Desa</p>
+                                <p id="dash-ph" class="text-3xl font-bold text-slate-800 font-poppins">7.2</p>
+                            </div>
+                        </div>
+                        
+                        <div class="p-5 rounded-[1.5rem] bg-white shadow-soft border border-slate-100 flex flex-col justify-between hover:-translate-y-1 transition-transform duration-300">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="w-10 h-10 rounded-2xl bg-sky-50 flex items-center justify-center text-primary">
+                                    <i class="fa-solid fa-chart-pie"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-500 font-medium mb-1 flex justify-between items-center">Volume <span class="text-primary font-bold"><i class="fa-solid fa-clock mr-1"></i><span id="dash-est-days">0.04</span> h</span></p>
+                                <p id="dash-vol" class="text-3xl font-bold text-slate-800 font-poppins">78%</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Progress Misi -->
+                    <div class="bg-white p-5 rounded-[1.5rem] shadow-soft border border-slate-100 relative overflow-hidden group hover:shadow-lg transition-shadow">
+                        <div class="absolute -right-4 -top-4 w-20 h-20 bg-gradient-to-bl from-green-100 to-transparent rounded-full opacity-50 group-hover:scale-150 transition-transform duration-700"></div>
+                        <div class="flex justify-between items-center mb-3 relative z-10">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-8 h-8 rounded-full bg-rose-50 flex items-center justify-center text-rose-500">
+                                    <i class="fa-solid fa-bullseye"></i>
+                                </div>
+                                <h4 class="font-bold text-sm text-slate-800 font-poppins">Misi Desa</h4>
+                            </div>
+                            <span class="text-sm font-bold text-primary font-poppins">75%</span>
+                        </div>
+                        <p class="text-[11px] text-slate-500 mb-4 relative z-10 font-medium">Kumpulkan 1.000 kg Sampah Anorganik Bulan Ini</p>
+                        <div class="w-full bg-slate-100 rounded-full h-3 mb-2 relative z-10 overflow-hidden shadow-inner">
+                            <div class="bg-gradient-to-r from-primary to-aqua h-full rounded-full relative" style="width: 75%">
+                                <div class="absolute top-0 right-0 bottom-0 w-4 bg-white opacity-30 skew-x-12 animate-pulse"></div>
+                            </div>
+                        </div>
+                        <p class="text-[10px] text-right text-slate-400 font-bold relative z-10">Terkumpul: <span class="text-slate-600">750 kg</span></p>
+                    </div>
+
+                    <!-- Pusat Edukasi (Cards List) -->
+                    <div class="mt-8">
+                        <div class="flex justify-between items-end mb-4 px-1">
+                            <h3 class="font-bold text-lg text-slate-800 font-poppins">Pusat Edukasi Gizi</h3>
+                            <button class="text-xs text-primary font-bold hover:underline">Lihat Semua</button>
+                        </div>
+                        <div class="space-y-4">
+                            <!-- Edukasi Item -->
+                            <div class="bg-white rounded-[1.5rem] shadow-soft border border-slate-100 overflow-hidden flex p-3 cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group" onclick="showToast('Mengarahkan ke artikel lengkap...', 'info')">
+                                <img src="https://images.unsplash.com/photo-1519823551278-64ac92734fb1?auto=format&fit=crop&q=80&w=200&h=200" alt="Edukasi" class="w-24 h-24 object-cover rounded-xl shrink-0 group-hover:scale-105 transition-transform duration-500">
+                                <div class="pl-4 flex flex-col justify-center flex-1">
+                                    <span class="text-[9px] font-bold text-primary uppercase tracking-widest mb-1.5">Kesehatan Anak</span>
+                                    <h4 class="font-bold text-sm text-slate-800 mb-1.5 font-poppins leading-tight">Mengenal Bahaya Stunting</h4>
+                                    <p class="text-[11px] text-slate-500 line-clamp-2 leading-relaxed font-medium">Pahami penyebab dan bahayanya bagi masa depan generasi desa kita.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white rounded-[1.5rem] shadow-soft border border-slate-100 overflow-hidden flex p-3 cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group" onclick="showToast('Mengarahkan ke artikel lengkap...', 'info')">
+                                <img src="https://images.unsplash.com/photo-1555243896-c709bfa0b564?auto=format&fit=crop&q=80&w=200&h=200" alt="Ibu Hamil" class="w-24 h-24 object-cover rounded-xl shrink-0 group-hover:scale-105 transition-transform duration-500">
+                                <div class="pl-4 flex flex-col justify-center flex-1">
+                                    <span class="text-[9px] font-bold text-pink-500 uppercase tracking-widest mb-1.5">Kehamilan</span>
+                                    <h4 class="font-bold text-sm text-slate-800 mb-1.5 font-poppins leading-tight">Pentingnya 1000 Hari Pertama</h4>
+                                    <p class="text-[11px] text-slate-500 line-clamp-2 leading-relaxed font-medium">Masa emas pertumbuhan yang menentukan perkembangan otak anak.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- IoT View -->
+                <div id="view-iot" class="space-y-6 hidden">
+                    <div class="text-center mb-6 mt-2">
+                        <span class="bg-primary/10 text-primary text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">Live Monitor</span>
+                        <h2 class="text-2xl font-bold text-slate-800 font-poppins mt-3">TERONIC</h2>
+                        <p class="text-sm text-slate-500 mt-1 font-medium">Terong Optimalisasi Air Cerdas</p>
+                        <p class="text-sm text-slate-500 mt-1 font-medium">Pemantauan real-time sensor cerdas</p>
+
+                    </div>
+                    
+                    <div class="bg-white p-8 rounded-[2rem] shadow-soft border border-slate-100 text-center">
+                        <div class="flex justify-between items-center mb-8">
+                            <h3 class="font-bold text-slate-800 font-poppins">Volume Air</h3>
+                            <div class="bg-green-50 text-green-600 text-xs font-bold px-3 py-1.5 rounded-xl flex items-center space-x-1.5 border border-green-100">
+                                <span class="relative flex h-2 w-2">
+                                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                  <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                                </span>
+                                <span>Sensor Aktif</span>
+                            </div>
+                        </div>
+                        
+                        <div class="relative mx-auto w-36 h-72 border-[6px] border-slate-100 rounded-t-2xl rounded-b-[2.5rem] overflow-hidden flex items-end bg-slate-50 shadow-inner">
+                            <div class="absolute inset-0 flex flex-col justify-between py-4 pr-2 text-[10px] text-slate-300 font-bold items-end z-0">
+                                <span>100</span><span>75</span><span>50</span><span>25</span><span>0</span>
+                            </div>
+                            <div id="water-bar" class="water-fill w-full relative z-10" style="height: 78%;">
+                                <div class="absolute top-0 left-0 w-full h-3 bg-white/40 rounded-t-[50%]"></div>
+                                <div class="absolute bottom-4 left-4 w-2 h-2 bg-white/40 rounded-full animate-bounce"></div>
+                                <div class="absolute bottom-8 right-6 w-3 h-3 bg-white/30 rounded-full animate-pulse"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-8">
+                            <p id="iot-vol-text" class="text-5xl font-bold text-slate-800 font-poppins tracking-tight">78%</p>
+                            <p class="text-sm text-slate-500 mt-2 font-medium">Kapasitas Maks: 30.000L</p>
+                            <div class="mt-4 inline-flex items-center justify-center space-x-2 bg-slate-50 border border-slate-200 text-slate-700 px-5 py-3 rounded-2xl text-xs font-bold shadow-sm">
+                                <i class="fa-solid fa-hourglass-half text-primary"></i>
+                                <span>Sisa suplai untuk <span id="iot-est-days" class="text-primary text-sm ml-1">0.04</span> hari</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-[2rem] shadow-soft border border-slate-100">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="font-bold text-slate-800 font-poppins">Kualitas pH Air</h3>
+                            <span id="ph-badge" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-green-50 text-green-600 border border-green-100">Normal</span>
+                        </div>
+                        <div class="flex items-end space-x-3">
+                            <div id="iot-ph-text" class="text-6xl font-bold text-slate-800 font-poppins tracking-tighter">7.2</div>
+                            <div class="pb-2 text-sm text-slate-400 font-bold uppercase tracking-widest">pH Level</div>
+                        </div>
+                        <div class="mt-8 relative pt-2">
+                            <div class="w-full h-3 rounded-full bg-gradient-to-r from-rose-400 via-emerald-400 to-indigo-400 shadow-inner"></div>
+                            <div id="ph-pointer" class="absolute top-0 w-4 h-7 bg-white border-2 border-slate-800 rounded-full shadow-md transition-all duration-500 transform -translate-x-1/2" style="left: 51%;"></div>
+                            <div class="flex justify-between mt-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                                <span>Asam</span>
+                                <span>Netral</span>
+                                <span>Basa</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bank Sampah View -->
+                <div id="view-bank" class="space-y-6 hidden">
+                    <div class="bg-white p-8 rounded-[2rem] shadow-soft border border-slate-100 text-center relative overflow-hidden">
+                        <div class="absolute -right-12 -top-12 w-40 h-40 rounded-full bg-gradient-to-br from-primary/10 to-aqua/10 blur-xl"></div>
+                        <div class="absolute -left-8 -bottom-8 w-24 h-24 rounded-full bg-gradient-to-tr from-amber-100 to-transparent blur-lg"></div>
+                        
+                        <p class="text-slate-500 font-medium mb-2 relative z-10 text-xs uppercase tracking-widest">Total Saldo Poin</p>
+                        <h2 class="text-5xl font-bold text-slate-800 font-poppins tracking-tight mb-6 relative z-10" id="bank-points">2.450</h2>
+                        
+                        <button onclick="showToast('Fitur pencatatan setor sampah akan segera hadir!', 'info')" class="relative z-10 inline-flex items-center space-x-2 px-8 py-4 rounded-2xl text-white font-bold shadow-glow bg-gradient-to-r from-primary to-aqua active:scale-95 transition-transform">
+                            <i class="fa-solid fa-plus text-lg"></i><span>Setor Sampah</span>
+                        </button>
+                    </div>
+                    
+                    <div class="glass-panel p-4 rounded-[1.5rem] flex items-start space-x-4 shadow-soft">
+                        <div class="bg-blue-50 w-12 h-12 rounded-2xl flex items-center justify-center text-primary shrink-0 shadow-inner">
+                            <i class="fa-solid fa-info-circle text-xl"></i>
+                        </div>
+                        <p class="text-[11px] text-slate-600 leading-relaxed font-medium pt-0.5">Setorkan sampah plastik, kaca, dan kertas ke Balai Desa setiap hari Minggu untuk mendapatkan poin tambahan.</p>
+                    </div>
+                    
+                    <div class="pt-2">
+                        <h3 class="font-bold text-lg px-1 mb-4 text-slate-800 font-poppins">Katalog Sembako</h3>
+                        <div class="grid grid-cols-2 gap-4" id="sembako-list"></div>
+                    </div>
+                </div>
+
+                <!-- Resep / Dapur Gen-Z View -->
+                <div id="view-resep" class="space-y-6 hidden">
+                    <div class="bg-white p-8 rounded-[2rem] shadow-soft border border-slate-100 text-center relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
+                        <div class="w-16 h-16 bg-orange-50 rounded-[1.2rem] flex items-center justify-center text-orange-500 mx-auto mb-4 rotate-3 shadow-inner">
+                            <i class="fa-solid fa-utensils text-2xl -rotate-3"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-slate-800 font-poppins mb-2">Dapur Gen-Z</h2>
+                        <p class="text-[11px] text-slate-500 leading-relaxed font-medium px-2">Kumpulan resep murah, bergizi, dan lezat dari bahan lokal untuk mencegah stunting anak.</p>
+                    </div>
+
+                    <div class="bg-slate-800 p-6 rounded-[2rem] shadow-xl border border-slate-700 text-white relative overflow-hidden">
+                        <div class="absolute -right-10 top-0 w-32 h-32 bg-primary opacity-30 rounded-full blur-3xl"></div>
+                        <div class="absolute left-0 bottom-0 w-24 h-24 bg-purple-500 opacity-20 rounded-full blur-3xl"></div>
+                        
+                        <div class="flex items-center space-x-3 mb-4 relative z-10">
+                            <div class="bg-white/10 p-2.5 rounded-xl backdrop-blur-sm">
+                                <i class="fa-solid fa-wand-magic-sparkles text-yellow-400"></i>
+                            </div>
+                            <h3 class="font-bold text-lg font-poppins tracking-wide">AI Koki Desa</h3>
+                        </div>
+                        <p class="text-xs text-slate-300 mb-5 relative z-10 font-medium leading-relaxed">Sisa bahan di dapur? Biar AI racikkan resep sehat anti-stunting spesial untuk keluarga!</p>
+                        
+                        <div class="relative z-10">
+                            <textarea id="ai-ingredients" placeholder="Ketik bahan: Tempe, Telur, Bayam..." class="w-full p-4 text-sm rounded-2xl bg-white/5 border border-white/10 focus:outline-none focus:ring-2 focus:ring-primary/50 text-white placeholder-slate-400 mb-4 resize-none shadow-inner backdrop-blur-sm" rows="2"></textarea>
+                            <button id="ai-btn" onclick="generateRecipeWithAI()" class="w-full py-4 rounded-2xl font-bold text-slate-900 shadow-glow bg-gradient-to-r from-aqua to-primary active:scale-95 transition-all flex justify-center items-center disabled:opacity-70 disabled:cursor-not-allowed font-poppins">
+                                <i class="fa-solid fa-sparkles mr-2"></i> Racik Resep Sekarang
+                            </button>
+                        </div>
+                        
+                        <div id="ai-result" class="mt-5 p-5 rounded-2xl bg-white/5 border border-white/10 hidden relative z-10 backdrop-blur-md">
+                            <p id="ai-result-content" class="whitespace-pre-wrap text-sm text-slate-200 leading-relaxed font-medium"></p>
+                        </div>
+                    </div>
+                    
+                    <div class="pt-2">
+                        <h3 class="font-bold text-lg px-1 mb-4 text-slate-800 font-poppins">Resep Populer Hari Ini</h3>
+                        <div class="space-y-4" id="resep-list"></div>
+                    </div>
+                </div>
+
+            </main>
+
+            <!-- Floating Modern Bottom Nav -->
+            <nav class="fixed bottom-6 w-[90%] max-w-[380px] left-1/2 transform -translate-x-1/2 glass-panel border border-white/40 rounded-full shadow-[0_20px_40px_-10px_rgba(0,0,0,0.15)] z-50">
+                <div class="flex justify-around items-center p-2.5">
+                    <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn active flex flex-col items-center justify-center w-[4.5rem] h-14 relative text-slate-400 group">
+                        <i class="fa-solid fa-home text-xl mb-1 group-hover:text-primary transition-colors"></i>
+                        <span class="text-[10px] font-bold tracking-wide group-hover:text-primary transition-colors">Beranda</span>
+                    </button>
+                    <button onclick="switchTab('iot')" id="nav-iot" class="nav-btn flex flex-col items-center justify-center w-[4.5rem] h-14 relative text-slate-400 group">
+                        <i class="fa-solid fa-droplet text-xl mb-1 group-hover:text-primary transition-colors"></i>
+                        <span class="text-[10px] font-bold tracking-wide group-hover:text-primary transition-colors">Teronic</span>
+                    </button>
+                    <button onclick="switchTab('bank')" id="nav-bank" class="nav-btn flex flex-col items-center justify-center w-[4.5rem] h-14 relative text-slate-400 group">
+                        <i class="fa-solid fa-recycle text-xl mb-1 group-hover:text-primary transition-colors"></i>
+                        <span class="text-[10px] font-bold tracking-wide group-hover:text-primary transition-colors">Bank Sampah</span>
+                    </button>
+                    <button onclick="switchTab('resep')" id="nav-resep" class="nav-btn flex flex-col items-center justify-center w-[4.5rem] h-14 relative text-slate-400 group">
+                        <i class="fa-solid fa-utensils text-xl mb-1 group-hover:text-primary transition-colors"></i>
+                        <span class="text-[10px] font-bold tracking-wide group-hover:text-primary transition-colors">Dapur Gen-Z</span>
+                    </button>
+                </div>
+            </nav>
+
+        </div>
+    </div>
+
+    <script>
+        // Custom Toast Notification System
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            let bgColor = type === 'success' ? 'bg-green-500' : 'bg-primary';
+            if(type === 'error') bgColor = 'bg-red-500';
+            
+            toast.className = `${bgColor} text-white px-4 py-3 rounded-xl shadow-lg transform transition-all duration-300 translate-y-[-100%] opacity-0 flex items-center space-x-2 pointer-events-auto mt-2`;
+            toast.innerHTML = `
+                <i class="fa-solid ${type === 'success' ? 'fa-check-circle' : 'fa-info-circle'}"></i>
+                <span class="text-sm font-medium leading-tight">${message}</span>
+            `;
+            
+            container.appendChild(toast);
+
+            // Animate in
+            setTimeout(() => {
+                toast.classList.remove('translate-y-[-100%]', 'opacity-0');
+                toast.classList.add('translate-y-0', 'opacity-100');
+            }, 10);
+
+            // Animate out and remove
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-[-100%]', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        let userPoints = 2450;
+        let waterLevel = 78;
+        let phLevel = 7.2;
+        let iotInterval = null;
+        let isLoginView = true;
+        let tipInterval = null;
+
+        const tipsData = [
+            "Air bekas cucian beras sangat baik untuk menyiram tanaman karena kaya nutrisi lho!",
+            "Konsumsi sebutir telur setiap hari sangat efektif untuk membantu mencegah stunting pada balita.",
+            "Pisahkan sampah organik dan anorganik dari rumah untuk mempermudah daur ulang di Bank Sampah.",
+            "Pastikan wadah penampungan air tertutup rapat untuk mencegah nyamuk DBD berkembang biak.",
+            "Daun kelor adalah 'superfood' lokal yang murah dan sangat kaya zat besi untuk ibu hamil.",
+            "Membawa tas belanja sendiri saat ke pasar membantu mengurangi limbah plastik di desa kita."
+        ];
+
+        const sembakoData = [
+            { id: 1, name: 'Beras Premium 5kg', price: 1500, img: 'https://images.unsplash.com/photo-1586201375761-83865001e8ac?auto=format&fit=crop&q=80&w=200&h=200' },
+            { id: 2, name: 'Minyak Goreng 1L', price: 450, img: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&q=80&w=200&h=200' },
+            { id: 3, name: 'Gula Pasir 1kg', price: 300, img: 'https://images.unsplash.com/photo-1581428982868-e410dd047a90?auto=format&fit=crop&q=80&w=200&h=200' },
+            { id: 4, name: 'Telur Ayam 1kg', price: 500, img: 'https://images.unsplash.com/photo-1587486913049-53fc88980cfc?auto=format&fit=crop&q=80&w=200&h=200' },
+        ];
+
+        const resepData = [
+            { id: 1, title: 'Nugget Tempe Sayur', desc: 'Alternatif nugget sehat tinggi protein dari tempe dan wortel.', time: '30 Menit', img: 'https://images.unsplash.com/photo-1628294895950-9805252327bc?auto=format&fit=crop&q=80&w=400&h=250' },
+            { id: 2, title: 'Sayur Bening Kelor', desc: 'Superfood lokal! Kaya akan zat besi untuk mencegah stunting.', time: '15 Menit', img: 'https://images.unsplash.com/photo-1548943487-a2e4e43b4853?auto=format&fit=crop&q=80&w=400&h=250' },
+            { id: 3, title: 'Puding Labu Kuning', desc: 'Cemilan manis alami kaya vitamin A untuk mata si kecil.', time: '45 Menit', img: 'https://images.unsplash.com/photo-1605197584547-c91ebcf8e3eb?auto=format&fit=crop&q=80&w=400&h=250' },
+            { id: 4, title: 'Bubur Kacang Hijau', desc: 'Sumber asam folat dan protein nabati terbaik untuk tumbuh kembang otak anak.', time: '40 Menit', img: 'https://images.unsplash.com/photo-1604328698692-f76ea9498e76?auto=format&fit=crop&q=80&w=400&h=250' },
+            { id: 5, title: 'Perkedel Ikan Teri', desc: 'Kaya kalsium! Lauk murah meriah untuk memperkuat tulang dan gigi balita.', time: '25 Menit', img: 'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&q=80&w=400&h=250' },
+            { id: 6, title: 'Sup Jagung Telur', desc: 'Kuah hangat nan bergizi, ampuh menambah nafsu makan si kecil yang sedang GTM.', time: '20 Menit', img: 'https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&q=80&w=400&h=250' },
+            { id: 7, title: 'Omelet Sayur Ceria', desc: 'Cara pintar menyembunyikan cincangan sayur ke dalam telur dadar favorit anak.', time: '10 Menit', img: 'https://images.unsplash.com/photo-1510693206972-df098062cb71?auto=format&fit=crop&q=80&w=400&h=250' },
+            { id: 8, title: 'Pepes Tahu Jamur', desc: 'Masakan kukus tanpa minyak dengan kandungan protein yang terjaga optimal.', time: '35 Menit', img: 'https://images.unsplash.com/photo-1555196301-9acc011df6cb?auto=format&fit=crop&q=80&w=400&h=250' }
+        ];
+
+        function toggleAuthView() {
+            isLoginView = !isLoginView;
+            const nameField = document.getElementById('name-field');
+            const inputName = document.getElementById('input-name');
+            const authTitle = document.getElementById('auth-title');
+            const submitBtn = document.getElementById('submit-btn');
+            const toggleText = document.getElementById('toggle-text');
+            const toggleBtn = document.getElementById('toggle-btn');
+
+            if (isLoginView) {
+                nameField.classList.add('hidden');
+                inputName.removeAttribute('required');
+                authTitle.innerText = 'Masuk ke Akun';
+                submitBtn.innerText = 'Masuk';
+                toggleText.innerText = 'Belum punya akun? ';
+                toggleBtn.innerText = 'Daftar sekarang';
+            } else {
+                nameField.classList.remove('hidden');
+                inputName.setAttribute('required', 'true');
+                authTitle.innerText = 'Daftar Akun Baru';
+                submitBtn.innerText = 'Daftar';
+                toggleText.innerText = 'Sudah punya akun? ';
+                toggleBtn.innerText = 'Masuk di sini';
+            }
+        }
+
+        function handleAuth(event) {
+            event.preventDefault();
+            document.getElementById('auth-view').classList.add('hidden');
+            document.getElementById('main-layout').classList.remove('hidden');
+            renderSembako();
+            renderResep();
+            startIoT();
+            startTips();
+            showToast('Selamat datang di TERONIC!', 'success');
+        }
+
+        function handleLogout() {
+            document.getElementById('main-layout').classList.add('hidden');
+            document.getElementById('auth-view').classList.remove('hidden');
+            if (!isLoginView) toggleAuthView();
+            stopIoT();
+            stopTips();
+        }
+
+        function startTips() {
+            if(tipInterval) clearInterval(tipInterval);
+            let tipIndex = 0;
+            const tipElement = document.getElementById('daily-tip');
+            tipElement.innerText = tipsData[tipIndex];
+            tipInterval = setInterval(() => {
+                tipElement.style.opacity = 0;
+                setTimeout(() => {
+                    tipIndex = (tipIndex + 1) % tipsData.length;
+                    tipElement.innerText = tipsData[tipIndex];
+                    tipElement.style.opacity = 1;
+                }, 500); 
+            }, 8000); 
+        }
+
+        function stopTips() { if(tipInterval) clearInterval(tipInterval); }
+
+        function switchTab(tabId) {
+            ['dashboard', 'iot', 'bank', 'resep'].forEach(id => {
+                document.getElementById(`view-${id}`).classList.add('hidden');
+                document.getElementById(`nav-${id}`).classList.remove('active');
+            });
+            document.getElementById(`view-${tabId}`).classList.remove('hidden');
+            document.getElementById(`nav-${tabId}`).classList.add('active');
+            const titleMap = { 'dashboard': 'Desa Terong', 'iot': 'Teronic', 'bank': 'Bank Sampah', 'resep': 'Dapur Gen-Z' };
+            document.getElementById('header-title').innerText = titleMap[tabId];
+            
+            // Scroll to top when switching tabs
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function formatNumber(num) { return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
+
+        function renderSembako() {
+            const container = document.getElementById('sembako-list');
+            container.innerHTML = '';
+            sembakoData.forEach(item => {
+                const canBuy = userPoints >= item.price;
+                const btnClass = canBuy ? 'bg-primary text-white shadow-glow active:scale-95' : 'bg-slate-100 text-slate-400 cursor-not-allowed';
+                container.innerHTML += `
+                    <div class="bg-white rounded-[1.5rem] shadow-soft border border-slate-100 overflow-hidden flex flex-col hover:-translate-y-1 transition-transform duration-300">
+                        <img src="${item.img}" alt="${item.name}" class="w-full h-28 object-cover">
+                        <div class="p-4 flex flex-col flex-grow justify-between">
+                            <div class="mb-4">
+                                <h4 class="font-bold text-sm leading-tight mb-1.5 text-slate-800 font-poppins">${item.name}</h4>
+                                <p class="text-xs font-bold text-primary">${item.price} pts</p>
+                            </div>
+                            <button onclick="beliSembako(${item.price})" class="mt-auto w-full py-2.5 rounded-xl text-xs font-bold transition-all font-poppins ${btnClass}" ${!canBuy ? 'disabled' : ''}>Tukar Poin</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function renderResep() {
+            const container = document.getElementById('resep-list');
+            container.innerHTML = '';
+            resepData.forEach(resep => {
+                container.innerHTML += `
+                    <div class="bg-white rounded-[1.5rem] shadow-soft border border-slate-100 overflow-hidden flex flex-col sm:flex-row cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group" onclick="showToast('Fitur detail resep akan segera hadir!', 'info')">
+                        <div class="w-full sm:w-2/5 h-36 sm:h-auto overflow-hidden relative">
+                            <img src="${resep.img}" alt="${resep.title}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                            <div class="absolute top-2 left-2 bg-white/90 backdrop-blur-md text-slate-800 text-[10px] font-bold px-2.5 py-1 rounded-lg shadow-sm">
+                                ⏱ ${resep.time}
+                            </div>
+                        </div>
+                        <div class="p-5 flex flex-col justify-between w-full">
+                            <div>
+                                <h3 class="font-bold text-base mb-2 text-slate-800 font-poppins leading-tight group-hover:text-primary transition-colors">${resep.title}</h3>
+                                <p class="text-[11px] text-slate-500 line-clamp-2 leading-relaxed font-medium">${resep.desc}</p>
+                            </div>
+                            <div class="mt-4 flex justify-end">
+                                <span class="text-[11px] font-bold text-primary flex items-center bg-primary/5 px-3 py-1.5 rounded-lg">Lihat Resep <i class="fa-solid fa-arrow-right ml-1.5 text-[10px]"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function beliSembako(price) {
+            if (userPoints >= price) {
+                userPoints -= price;
+                showToast("Pembelian berhasil! Sembako dapat diambil di balai desa.", "success");
+                document.getElementById('dash-points').innerText = formatNumber(userPoints);
+                document.getElementById('bank-points').innerText = formatNumber(userPoints);
+                renderSembako(); 
+            }
+        }
+
+        function startIoT() {
+            if(iotInterval) clearInterval(iotInterval);
+            iotInterval = setInterval(() => {
+                waterLevel = Math.min(100, Math.max(0, waterLevel + (Math.random() * 4 - 2)));
+                let roundedWater = Math.round(waterLevel);
+                phLevel = phLevel + (Math.random() * 0.2 - 0.1);
+                let roundedPh = Math.round(phLevel * 10) / 10;
+                
+                // Kalkulasi estimasi ketersediaan air
+                // Maksimal kapasitas 30.000 L
+                // Penduduk: 2.835 jiwa, Pemakaian: 135 Liter/hari/jiwa
+                let currentLiters = (roundedWater / 100) * 30000;
+                let dailyConsumption = 2835 * 135; // Total 382.725 Liter/hari
+                let estimatedDays = (currentLiters / dailyConsumption).toFixed(2);
+
+                document.getElementById('dash-vol').innerText = `${roundedWater}%`;
+                document.getElementById('dash-ph').innerText = roundedPh;
+                document.getElementById('dash-est-days').innerText = estimatedDays;
+                document.getElementById('iot-vol-text').innerText = `${roundedWater}%`;
+                document.getElementById('water-bar').style.height = `${roundedWater}%`;
+                document.getElementById('iot-ph-text').innerText = roundedPh;
+                document.getElementById('ph-pointer').style.left = `${(roundedPh / 14) * 100}%`;
+                document.getElementById('iot-est-days').innerText = estimatedDays;
+
+                const badge = document.getElementById('ph-badge');
+                if(roundedPh < 6.5) { badge.innerText = "Asam"; badge.className = "px-3 py-1.5 rounded-xl text-xs font-bold bg-rose-50 text-rose-600 border border-rose-100"; }
+                else if(roundedPh > 8.5) { badge.innerText = "Basa"; badge.className = "px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-50 text-amber-600 border border-amber-100"; }
+                else { badge.innerText = "Normal"; badge.className = "px-3 py-1.5 rounded-xl text-xs font-bold bg-green-50 text-green-600 border border-green-100"; }
+            }, 3000);
+        }
+
+        function stopIoT() { if(iotInterval) clearInterval(iotInterval); }
+
+        async function generateRecipeWithAI() {
+            const ingredientsInput = document.getElementById('ai-ingredients');
+            const ingredients = ingredientsInput.value;
+            if (!ingredients.trim()) {
+                showToast("Tuliskan bahan-bahan yang Anda punya terlebih dahulu.", "info");
+                return;
+            }
+            
+            const btn = document.getElementById('ai-btn');
+            const resultDiv = document.getElementById('ai-result');
+            const contentDiv = document.getElementById('ai-result-content');
+            
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Meracik...';
+            btn.disabled = true;
+            resultDiv.classList.add('hidden');
+            
+            const apiKey = ""; 
+            const payload = {
+                contents: [{ parts: [{ text: `Buatkan 1 resep masakan yang sehat, murah, dan bergizi tinggi (sangat cocok untuk mencegah stunting pada anak) hanya dengan memanfaatkan bahan-bahan berikut: ${ingredients}.` }] }],
+                systemInstruction: { parts: [{ text: "Kamu adalah ahli gizi desa yang ramah. Berikan jawaban yang terstruktur, ringkas, dan format menggunakan teks biasa (Judul Resep, Waktu Persiapan, Manfaat Singkat, dan Cara Membuat)." }] }
+            };
+            
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            
+            // Implementasi Exponential Backoff
+            let retries = 5;
+            let delay = 1000;
+            let success = false;
+
+            while (retries > 0 && !success) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST', 
+                        headers: { 'Content-Type': 'application/json' }, 
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    if (!response.ok) throw new Error('API request failed');
+                    
+                    const result = await response.json();
+                    contentDiv.innerText = result.candidates?.[0]?.content?.parts?.[0]?.text || "Maaf, terjadi kesalahan tak terduga.";
+                    resultDiv.classList.remove('hidden');
+                    success = true;
+                } catch (error) {
+                    retries--;
+                    if (retries === 0) {
+                        contentDiv.innerText = "Maaf, AI sedang sibuk saat ini. Silakan coba kembali nanti.";
+                        resultDiv.classList.remove('hidden');
+                    } else {
+                        await new Promise(res => setTimeout(res, delay));
+                        delay *= 2; // gandakan jeda waktu (1s, 2s, 4s, 8s...)
+                    }
+                }
+            }
+            
+            btn.innerHTML = '✨ Racik Resep';
+            btn.disabled = false;
+        }
+    </script>
+</body>
+</html>
