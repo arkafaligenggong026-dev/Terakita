@@ -108,9 +108,9 @@
             
             <div class="w-full glass-panel rounded-[2rem] shadow-glass overflow-hidden relative z-10 border border-white">
                 <div class="p-8 text-center mt-4">
-                    <div class="w-20 h-20 bg-gradient-to-br from-primary to-aqua rounded-2xl mx-auto flex items-center justify-center shadow-glow mb-6 rotate-3">
-                        <i class="fa-solid fa-leaf text-4xl text-white -rotate-3"></i>
-                    </div>
+                    <!-- Ganti bagian src="..." dengan link atau nama file gambar logo Anda -->
+                    <img src="logo aplikasi.png" alt="Logo Terakita" class="w-24 h-24 mx-auto mb-6 object-contain drop-shadow-lg transition-transform hover:scale-105">
+                    
                     <!-- Mengubah TERAKITA menjadi TERAKITA+ (pangkat) -->
                     <h1 class="text-3xl font-extrabold mb-2 font-poppins text-slate-800 tracking-tight">TERAKITA<sup class="text-xl">+</sup></h1>
                     <p class="text-sm text-slate-500 font-medium">Terong Aksi Kita</p>
@@ -223,7 +223,7 @@
                                 </div>
                             </div>
                             <div>
-                                <p class="text-xs text-slate-500 font-medium mb-1 flex justify-between items-center">Kapasitas <span class="text-primary font-bold"></p>
+                                <p class="text-xs text-slate-500 font-medium mb-1 flex justify-between items-center">Kapasitas</p>
                                 <p id="dash-vol" class="text-3xl font-bold text-slate-800 font-poppins">78%</p>
                             </div>
                         </div>
@@ -700,12 +700,12 @@
 
                 document.getElementById('dash-vol').innerText = `${roundedWater}%`;
                 document.getElementById('dash-ph').innerText = roundedPh;
-                document.getElementById('dash-est-days').innerText = estimatedDays;
+                // document.getElementById('dash-est-days').innerText = estimatedDays;
                 document.getElementById('iot-vol-text').innerText = `${roundedWater}%`;
                 document.getElementById('water-bar').style.height = `${roundedWater}%`;
                 document.getElementById('iot-ph-text').innerText = roundedPh;
                 document.getElementById('ph-pointer').style.left = `${(roundedPh / 14) * 100}%`;
-                document.getElementById('iot-est-days').innerText = estimatedDays;
+                // document.getElementById('iot-est-days').innerText = estimatedDays;
 
                 const badge = document.getElementById('ph-badge');
                 if(roundedPh < 6.5) { badge.innerText = "Asam"; badge.className = "px-3 py-1.5 rounded-xl text-xs font-bold bg-rose-50 text-rose-600 border border-rose-100"; }
