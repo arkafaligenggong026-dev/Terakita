@@ -275,6 +275,36 @@
                                     <p class="text-[11px] text-slate-500 line-clamp-2 leading-relaxed font-medium">Masa emas pertumbuhan yang menentukan perkembangan otak anak.</p>
                                 </div>
                             </div>
+
+                            <!-- Artikel Baru 1 -->
+                            <div class="bg-white rounded-[1.5rem] shadow-soft border border-slate-100 overflow-hidden flex p-3 cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group" onclick="showToast('Mengarahkan ke artikel lengkap...', 'info')">
+                                <img src="https://images.unsplash.com/photo-1544367567-0f2fcb046eb9?auto=format&fit=crop&q=80&w=200&h=200" alt="MPASI Balita" class="w-24 h-24 object-cover rounded-xl shrink-0 group-hover:scale-105 transition-transform duration-500">
+                                <div class="pl-4 flex flex-col justify-center flex-1">
+                                    <span class="text-[9px] font-bold text-orange-500 uppercase tracking-widest mb-1.5">Gizi Balita</span>
+                                    <h4 class="font-bold text-sm text-slate-800 mb-1.5 font-poppins leading-tight">Rahasia MPASI Kaya Protein</h4>
+                                    <p class="text-[11px] text-slate-500 line-clamp-2 leading-relaxed font-medium">Cara tepat mengenalkan makanan pendamping ASI untuk kejar tumbuh kembang balita.</p>
+                                </div>
+                            </div>
+
+                            <!-- Artikel Baru 2 -->
+                            <div class="bg-white rounded-[1.5rem] shadow-soft border border-slate-100 overflow-hidden flex p-3 cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group" onclick="showToast('Mengarahkan ke artikel lengkap...', 'info')">
+                                <img src="https://images.unsplash.com/photo-1584483766114-2cea6facdf57?auto=format&fit=crop&q=80&w=200&h=200" alt="Sanitasi Air" class="w-24 h-24 object-cover rounded-xl shrink-0 group-hover:scale-105 transition-transform duration-500">
+                                <div class="pl-4 flex flex-col justify-center flex-1">
+                                    <span class="text-[9px] font-bold text-blue-500 uppercase tracking-widest mb-1.5">Sanitasi Lingkungan</span>
+                                    <h4 class="font-bold text-sm text-slate-800 mb-1.5 font-poppins leading-tight">Cegah Infeksi Lewat Air Bersih</h4>
+                                    <p class="text-[11px] text-slate-500 line-clamp-2 leading-relaxed font-medium">Menjaga kebersihan lingkungan adalah kunci utama agar nutrisi anak terserap maksimal.</p>
+                                </div>
+                            </div>
+
+                            <!-- Artikel Baru 3 -->
+                            <div class="bg-white rounded-[1.5rem] shadow-soft border border-slate-100 overflow-hidden flex p-3 cursor-pointer hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group" onclick="showToast('Mengarahkan ke artikel lengkap...', 'info')">
+                                <img src="https://images.unsplash.com/photo-1557310717-d6bea9f36682?auto=format&fit=crop&q=80&w=200&h=200" alt="Ibu Menyusui" class="w-24 h-24 object-cover rounded-xl shrink-0 group-hover:scale-105 transition-transform duration-500">
+                                <div class="pl-4 flex flex-col justify-center flex-1">
+                                    <span class="text-[9px] font-bold text-teal-500 uppercase tracking-widest mb-1.5">Bayi & Menyusui</span>
+                                    <h4 class="font-bold text-sm text-slate-800 mb-1.5 font-poppins leading-tight">Keajaiban ASI di 6 Bulan Pertama</h4>
+                                    <p class="text-[11px] text-slate-500 line-clamp-2 leading-relaxed font-medium">Imunisasi alami pertama bayi yang melindunginya dari berbagai penyakit penyebab stunting.</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -411,26 +441,45 @@
                     </div>
                 </div>
 
+                <!-- Panduan GERAK View -->
+                <div id="view-gerak" class="space-y-6 hidden">
+                    <button onclick="showToast('Membuka Panduan GERAK...', 'info')" class="w-full relative rounded-[2rem] overflow-hidden shadow-glow border border-slate-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group focus:outline-none focus:ring-4 focus:ring-primary/30">
+                        <img src="book cover depan final asli.png" onerror="this.src='https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&q=80&w=400&h=600'" alt="Cover Panduan GERAK" class="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent flex flex-col justify-end p-6 text-left">
+                            <div class="bg-primary/90 backdrop-blur-md w-12 h-12 rounded-full flex items-center justify-center text-white mb-4 shadow-glass">
+                                <i class="fa-solid fa-book-open-reader text-xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-white font-poppins mb-1.5 tracking-tight">Panduan GERAK</h3>
+                            <p class="text-[11px] text-slate-200 font-medium leading-relaxed">Ketuk untuk mengikuti kegiatan Mapalus bakti di desa Terong.</p>
+                        </div>
+                    </button>
+                </div>
+
             </main>
 
             <!-- Floating Modern Bottom Nav -->
-            <nav class="fixed bottom-6 w-[90%] max-w-[380px] left-1/2 transform -translate-x-1/2 glass-panel border border-white/40 rounded-full shadow-[0_20px_40px_-10px_rgba(0,0,0,0.15)] z-50">
+            <nav class="fixed bottom-6 w-[95%] max-w-[400px] left-1/2 transform -translate-x-1/2 glass-panel border border-white/40 rounded-full shadow-[0_20px_40px_-10px_rgba(0,0,0,0.15)] z-50">
                 <div class="flex justify-around items-center p-2.5">
-                    <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn active flex flex-col items-center justify-center w-[4.5rem] h-14 relative text-slate-400 group">
-                        <i class="fa-solid fa-home text-xl mb-1 group-hover:text-primary transition-colors"></i>
-                        <span class="text-[10px] font-bold tracking-wide group-hover:text-primary transition-colors">Beranda</span>
-                    </button>
-                    <button onclick="switchTab('iot')" id="nav-iot" class="nav-btn flex flex-col items-center justify-center w-[4.5rem] h-14 relative text-slate-400 group">
+                    <button onclick="switchTab('iot')" id="nav-iot" class="nav-btn flex flex-col items-center justify-center w-14 h-14 relative text-slate-400 group">
                         <i class="fa-solid fa-droplet text-xl mb-1 group-hover:text-primary transition-colors"></i>
-                        <span class="text-[10px] font-bold tracking-wide group-hover:text-primary transition-colors">Teronic</span>
+                        <span class="text-[9px] font-bold tracking-wide group-hover:text-primary transition-colors">Teronic</span>
                     </button>
-                    <button onclick="switchTab('bank')" id="nav-bank" class="nav-btn flex flex-col items-center justify-center w-[4.5rem] h-14 relative text-slate-400 group">
+                    <button onclick="switchTab('bank')" id="nav-bank" class="nav-btn flex flex-col items-center justify-center w-14 h-14 relative text-slate-400 group">
                         <i class="fa-solid fa-recycle text-xl mb-1 group-hover:text-primary transition-colors"></i>
-                        <span class="text-[10px] font-bold tracking-wide group-hover:text-primary transition-colors">Bank Sampah</span>
+                        <span class="text-[9px] font-bold tracking-wide group-hover:text-primary transition-colors">Bank</span>
                     </button>
-                    <button onclick="switchTab('resep')" id="nav-resep" class="nav-btn flex flex-col items-center justify-center w-[4.5rem] h-14 relative text-slate-400 group">
+                    <!-- Beranda ditaruh di TENGAH -->
+                    <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn active flex flex-col items-center justify-center w-14 h-14 relative text-slate-400 group">
+                        <i class="fa-solid fa-home text-xl mb-1 group-hover:text-primary transition-colors"></i>
+                        <span class="text-[9px] font-bold tracking-wide group-hover:text-primary transition-colors">Beranda</span>
+                    </button>
+                    <button onclick="switchTab('resep')" id="nav-resep" class="nav-btn flex flex-col items-center justify-center w-14 h-14 relative text-slate-400 group">
                         <i class="fa-solid fa-utensils text-xl mb-1 group-hover:text-primary transition-colors"></i>
-                        <span class="text-[10px] font-bold tracking-wide group-hover:text-primary transition-colors">Dapur Gen-Z</span>
+                        <span class="text-[9px] font-bold tracking-wide group-hover:text-primary transition-colors">Dapur</span>
+                    </button>
+                    <button onclick="switchTab('gerak')" id="nav-gerak" class="nav-btn flex flex-col items-center justify-center w-14 h-14 relative text-slate-400 group">
+                        <i class="fa-solid fa-person-running text-xl mb-1 group-hover:text-primary transition-colors"></i>
+                        <span class="text-[9px] font-bold tracking-wide group-hover:text-primary transition-colors">GERAK</span>
                     </button>
                 </div>
             </nav>
@@ -566,13 +615,13 @@
         function stopTips() { if(tipInterval) clearInterval(tipInterval); }
 
         function switchTab(tabId) {
-            ['dashboard', 'iot', 'bank', 'resep'].forEach(id => {
+            ['dashboard', 'iot', 'bank', 'resep', 'gerak'].forEach(id => {
                 document.getElementById(`view-${id}`).classList.add('hidden');
                 document.getElementById(`nav-${id}`).classList.remove('active');
             });
             document.getElementById(`view-${tabId}`).classList.remove('hidden');
             document.getElementById(`nav-${tabId}`).classList.add('active');
-            const titleMap = { 'dashboard': 'Desa Terong', 'iot': 'Teronic', 'bank': 'Bank Sampah', 'resep': 'Dapur Gen-Z' };
+            const titleMap = { 'dashboard': 'Desa Terong', 'iot': 'Teronic', 'bank': 'Bank Sampah', 'resep': 'Dapur Gen-Z', 'gerak': 'Panduan GERAK' };
             document.getElementById('header-title').innerText = titleMap[tabId];
             
             // Scroll to top when switching tabs
